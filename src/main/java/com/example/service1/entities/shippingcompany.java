@@ -1,6 +1,7 @@
 package com.example.service1.entities;
 
 import jakarta.persistence.*;
+
 @Entity
 @Table(name = "shippingcompany")
 public class shippingcompany {
@@ -9,25 +10,21 @@ public class shippingcompany {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "company_name", nullable = false, unique = true)
+    @Column(name = "company_name")
     private String companyName;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "password")
     private String password;
 
-    @Column(name = "geographic_coverage", nullable = false)
+    @Column(name = "geographic_coverage", columnDefinition = "text")
     private String geographicCoverage;
-
-    @Column(name = "username", nullable = false)
-    private String username;
 
     public shippingcompany() {}
 
-    public shippingcompany(String companyName,String username, String password, String geographicCoverage) {
+    public shippingcompany(String companyName, String password, String geographicCoverage) {
         this.companyName = companyName;
         this.password = password;
         this.geographicCoverage = geographicCoverage;
-        this.username = username;
     }
 
     public Long getId() {
@@ -61,13 +58,4 @@ public class shippingcompany {
     public void setGeographicCoverage(String geographicCoverage) {
         this.geographicCoverage = geographicCoverage;
     }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
 }
-

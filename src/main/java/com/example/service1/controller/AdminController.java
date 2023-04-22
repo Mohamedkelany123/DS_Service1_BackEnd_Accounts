@@ -1,7 +1,12 @@
 package com.example.service1.controller;
 
 import com.example.service1.entities.admin;
+import com.example.service1.entities.customeraccount;
 import com.example.service1.entities.productsellingcompany;
+import com.example.service1.entities.shippingcompany;
+import com.example.service1.services.CustomerAccountService;
+import com.example.service1.services.ProductSellingCompanyAccountService;
+import com.example.service1.services.ShippingCompanyService;
 import jakarta.ejb.EJB;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -18,7 +23,13 @@ import java.util.List;
 public class AdminController {
 
     @EJB
-    private ProductSellingCompanyAccountService companyService;
+    private ProductSellingCompanyAccountService sellingCompanyService;
+
+    @EJB
+    private ShippingCompanyService shippingCompanyService;
+
+    @EJB
+    private CustomerAccountService customerAccountService;
 
     private final EntityManagerFactory emf = Persistence.createEntityManagerFactory("mysql");
     private final EntityManager entityManager = emf.createEntityManager();
@@ -62,7 +73,7 @@ public class AdminController {
     }
 
     @GET
-    @Path("/all")
+    @Path("/listAdmins")
     @Produces(MediaType.APPLICATION_JSON)
     public List<admin> getAllAdmins() {
         TypedQuery<admin> query = entityManager.createQuery("SELECT a FROM admin a", admin.class);
@@ -70,11 +81,11 @@ public class AdminController {
     }
 
     @POST
-    @Path("/register-selling-company-representative/{name}")
+    @Path("/registerSellingCompany/{name}")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response registerProductSellingCompany(@PathParam("name") String company_name) {
         try {
-            companyService.registerProductSellingCompany(company_name);
+            sellingCompanyService.registerProductSellingCompany(company_name);
             return Response.status(Status.CREATED).build();
         } catch (Exception e) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Failed to register company").build();
@@ -82,12 +93,49 @@ public class AdminController {
     }
 
     @GET
-    @Path("/all-selling-companies")
+    @Path("/listSellingCompanies")
     @Produces(MediaType.APPLICATION_JSON)
     public List<productsellingcompany> getAllProductSellingCompanies() {
-        return companyService.getAllProductSellingCompanies();
+        return sellingCompanyService.getAllProductSellingCompanies();
     }
 
+    @POST
+    @Path("/registerShippingCompany")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response registerShippingCompany(shippingcompany company) {
+        try {
+            System.out.println("CREATING SHIPPING COMPANY");
+            shippingCompanyService.createShippingCompany(company.getCompanyName(), company.getGeographicCoverage());
+            return Response.status(Status.CREATED).build();
+        } catch (Exception e) {
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Failed to register shipping company").build();
+        }
+    }
 
+    @GET
+    @Path("/listShippingCompanies")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<shippingcompany> getAllShippingCompanies() {
+        return shippingCompanyService.listShippingCompanies();
+    }
+
+    @DELETE
+    @Path("/deleteShippingCompany/{id}")
+    public Response deleteShippingCompany(@PathParam("id") Long companyId) {
+        try {
+            shippingCompanyService.deleteShippingCompany(companyId);
+            return Response.status(Status.OK).build();
+        } catch (Exception e) {
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Failed to delete shipping company").build();
+        }
+    }
+
+    @GET
+    @Path("/listCustomerAccounts")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllCustomerAccounts() {
+        List<customeraccount> accounts = customerAccountService.getAllCustomerAccounts();
+        return Response.ok().entity(accounts).build();
+    }
 }
 
