@@ -8,6 +8,7 @@ import com.example.service1.services.CustomerAccountService;
 import com.example.service1.services.ProductSellingCompanyAccountService;
 import com.example.service1.services.ShippingCompanyService;
 import jakarta.ejb.EJB;
+import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
@@ -39,6 +40,7 @@ public class AdminController {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response registerAdmin(admin admin) {
         try {
+            System.out.println("USERNAME : "+  admin.getUsername());
             entityManager.getTransaction().begin();
             entityManager.persist(admin);
             entityManager.getTransaction().commit();
@@ -100,12 +102,13 @@ public class AdminController {
     }
 
     @POST
-    @Path("/registerShippingCompany")
+    @Path("/registerShippingCompany/{name}/{geographic_coverage}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response registerShippingCompany(shippingcompany company) {
+    public Response registerShippingCompany(@PathParam("name") String company_name, @PathParam("geographic_coverage") String geographic_coverage) {
         try {
             System.out.println("CREATING SHIPPING COMPANY");
-            shippingCompanyService.createShippingCompany(company.getCompanyName(), company.getGeographicCoverage());
+            System.out.println("COMPANY NAME: "+ company_name);
+            shippingCompanyService.createShippingCompany(company_name, geographic_coverage);
             return Response.status(Status.CREATED).build();
         } catch (Exception e) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Failed to register shipping company").build();

@@ -11,20 +11,20 @@ public class shippingcompany {
     private Long id;
 
     @Column(name = "company_name")
-    private String companyName;
+    private String company_name;
 
     @Column(name = "password")
     private String password;
 
-    @Column(name = "geographic_coverage", columnDefinition = "text")
-    private String geographicCoverage;
+    @Column(name = "geographic_coverage")
+    private String geographic_coverage;
 
     public shippingcompany() {}
 
-    public shippingcompany(String companyName, String password, String geographicCoverage) {
-        this.companyName = companyName;
+    public shippingcompany(String company_name, String password, String geographic_coverage) {
+        this.company_name = company_name;
         this.password = password;
-        this.geographicCoverage = geographicCoverage;
+        this.geographic_coverage = geographic_coverage;
     }
 
     public Long getId() {
@@ -36,11 +36,11 @@ public class shippingcompany {
     }
 
     public String getCompanyName() {
-        return companyName;
+        return company_name;
     }
 
     public void setCompanyName(String companyName) {
-        this.companyName = companyName;
+        this.company_name = companyName;
     }
 
     public String getPassword() {
@@ -52,10 +52,10 @@ public class shippingcompany {
     }
 
     public String getGeographicCoverage() {
-        return geographicCoverage;
+        return geographic_coverage;
     }
 
     public void setGeographicCoverage(String geographicCoverage) {
-        this.geographicCoverage = geographicCoverage;
+        this.geographic_coverage = geographicCoverage;
     }
 }

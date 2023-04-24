@@ -1,16 +1,12 @@
 package com.example.service1.services;
 
 import com.example.service1.entities.customeraccount;
-import com.example.service1.entities.productsellingcompany;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.TypedQuery;
-
-import java.security.SecureRandom;
 import java.util.List;
-import java.util.Random;
 
 @Stateless
 public class CustomerAccountService {
@@ -18,8 +14,8 @@ public class CustomerAccountService {
     private final EntityManagerFactory emf = Persistence.createEntityManagerFactory("mysql");
     private final EntityManager entityManager = emf.createEntityManager();
 
-    public void register(String name, String username, String password) {
-        customeraccount customer = new customeraccount(name, username, password);
+    public void register(String name, String username, String password, String location) {
+        customeraccount customer = new customeraccount(name, username, password, location);
 
         EntityManager entityManager = null;
 

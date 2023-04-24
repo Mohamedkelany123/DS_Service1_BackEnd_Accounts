@@ -21,28 +21,22 @@ public class ShippingCompanyService {
     private final EntityManager entityManager = emf.createEntityManager();
 
     public void createShippingCompany(String companyName,String geographicCoverage) {
-        System.out.println("Creating password");
         String password = generateRandomPassword();
-        System.out.println("BEFORE CONSTRUCTOR");
         shippingcompany company = new shippingcompany(companyName, password, geographicCoverage);
-        System.out.println("AFTER CONSTRUCTOR");
 
         EntityManager entityManager = null;
 
         try {
-            System.out.println("INSIDE TRY");
             entityManager = emf.createEntityManager();
             entityManager.getTransaction().begin();
             entityManager.persist(company);
             entityManager.getTransaction().commit();
         } catch (Exception e) {
-            System.out.println("INSIDE CATCH");
             if (entityManager != null && entityManager.getTransaction().isActive()) {
                 entityManager.getTransaction().rollback();
             }
             throw e;
         } finally {
-            System.out.println("INSIDE FINALLY");
             if (entityManager != null) {
                 entityManager.close();
             }

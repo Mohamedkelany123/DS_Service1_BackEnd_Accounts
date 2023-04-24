@@ -18,12 +18,16 @@ public class customeraccount {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Column(name = "location")
+    private String location;
+
     public customeraccount() {}
 
-    public customeraccount(String name, String username, String password) {
+    public customeraccount(String name, String username, String password, String location) {
         this.username = username;
         this.password = password;
         this.name = name;
+        this.location = location;
     }
 
     public String getName() {
@@ -56,6 +60,14 @@ public class customeraccount {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 }
 

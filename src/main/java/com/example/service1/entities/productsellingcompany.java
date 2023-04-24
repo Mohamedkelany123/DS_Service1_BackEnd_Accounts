@@ -11,7 +11,7 @@ public class productsellingcompany {
     private Long id;
 
     @Column(name = "company_name", nullable = false, unique = true)
-    private String companyName;
+    private String company_name;
 
     @Column(name = "password", nullable = false)
     private String password;
@@ -19,9 +19,9 @@ public class productsellingcompany {
 
     public productsellingcompany() {}
 
-    public productsellingcompany(String companyName, String password) {
+    public productsellingcompany(String company_name, String password) {
+        this.company_name = company_name;
         this.password = password;
-        this.companyName = companyName;
     }
 
     public Long getId() {
@@ -33,11 +33,11 @@ public class productsellingcompany {
     }
 
     public String getCompanyName() {
-        return companyName;
+        return company_name;
     }
 
     public void setCompanyName(String companyName) {
-        this.companyName = companyName;
+        this.company_name = companyName;
     }
 
     public String getPassword() {
