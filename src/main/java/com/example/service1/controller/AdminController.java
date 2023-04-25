@@ -8,7 +8,6 @@ import com.example.service1.services.CustomerAccountService;
 import com.example.service1.services.ProductSellingCompanyAccountService;
 import com.example.service1.services.ShippingCompanyService;
 import jakarta.ejb.EJB;
-import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
@@ -20,6 +19,7 @@ import jakarta.ws.rs.core.Response.Status;
 
 import java.util.List;
 
+//AMA BT3ML STATELESS BEYLOGIN MARA WAHDA BAS
 @Path("/admin")
 public class AdminController {
 

@@ -24,9 +24,11 @@ public class orders {
     private String shipping_company;
 
     public orders(){}
-    public orders(String customerName, String products) {
+    public orders(String customerName, String products, String shipping_company, String status) {
         this.customerName = customerName;
         this.products = products;
+        this.shipping_company = shipping_company;
+        this.status = status;
     }
 
     public String getProducts() {
