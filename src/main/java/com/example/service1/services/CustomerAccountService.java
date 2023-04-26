@@ -14,8 +14,8 @@ public class CustomerAccountService {
     private final EntityManagerFactory emf = Persistence.createEntityManagerFactory("mysql");
     private final EntityManager entityManager = emf.createEntityManager();
 
-    public void register(String name, String username, String password, String location) {
-        customeraccount customer = new customeraccount(name, username, password, location);
+    public void register(String name, String username, String password, String location, String email) {
+        customeraccount customer = new customeraccount(name, username, password, location, email);
 
         EntityManager entityManager = null;
 

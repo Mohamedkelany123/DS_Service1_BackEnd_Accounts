@@ -1,6 +1,7 @@
 package com.example.service1.services;
 
 import com.example.service1.entities.productsellingcompany;
+import com.example.service1.entities.sellingcompanysoldproducts;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -58,6 +59,12 @@ public class ProductSellingCompanyAccountService {
         }
         return sb.toString();
 
+    }
+
+    public void addSoldProduct(sellingcompanysoldproducts soldProduct) {
+        entityManager.getTransaction().begin();
+        entityManager.persist(soldProduct);
+        entityManager.getTransaction().commit();
     }
 
 }

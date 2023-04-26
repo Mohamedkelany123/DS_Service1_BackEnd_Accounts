@@ -23,12 +23,20 @@ public class orders {
     @Column(name = "shipping_company")
     private String shipping_company;
 
+    @Column(name = "totalPrice")
+    private int totalPrice;
+
+    @Column(name = "location")
+    private String location;
+
     public orders(){}
-    public orders(String customerName, String products, String shipping_company, String status) {
+    public orders(String customerName, String products, String shipping_company, String status, int totalPrice, String location ) {
         this.customerName = customerName;
         this.products = products;
         this.shipping_company = shipping_company;
         this.status = status;
+        this.totalPrice = totalPrice;
+        this.location = location;
     }
 
     public String getProducts() {
@@ -46,26 +54,30 @@ public class orders {
     public void setId(Long id) {
         this.id = id;
     }
-
     public String getCustomerName() {
         return customerName;
     }
-
     public void setCustomerName(String customerName) {
         this.customerName = customerName;
     }
-
     public String getStatus() {
         return status;
     }
-
     public void setStatusProcessing() {
         this.status = "processing";
     }
     public void setStatusShipped() {this.status = "shipped";}
-
     public String getShipping_company() {return shipping_company;}
-
     public void setShipping_company(String shipping_company) {this.shipping_company = shipping_company;}
+    public int getTotalPrice() {return totalPrice;}
+    public void setTotalPrice(int totalPrice) {this.totalPrice = totalPrice;}
+
+    public void setStatus(String status) {this.status = status;}
+
+    public String getLocation() {return location;}
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
 }
 

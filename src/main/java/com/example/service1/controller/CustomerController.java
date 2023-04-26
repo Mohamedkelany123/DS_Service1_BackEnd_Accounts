@@ -3,14 +3,13 @@ package com.example.service1.controller;
 import com.example.service1.entities.customeraccount;
 import com.example.service1.entities.orders;
 import com.example.service1.entities.product;
+import com.example.service1.entities.sellingcompanysoldproducts;
 import com.example.service1.services.CustomerAccountService;
+import com.example.service1.services.ProductSellingCompanyAccountService;
 import com.example.service1.services.PurchaseOrderService;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Stateful;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
-import jakarta.persistence.TypedQuery;
+import jakarta.persistence.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
@@ -31,6 +30,9 @@ public class CustomerController {
     @EJB
     private PurchaseOrderService purchaseOrderService;
 
+    @EJB
+    ProductSellingCompanyAccountService productSellingCompanyAccountService;
+
     private ArrayList<String> cart = new ArrayList<>();
 
     private final EntityManagerFactory emf = Persistence.createEntityManagerFactory("mysql");
@@ -43,7 +45,7 @@ public class CustomerController {
         HttpSession session = request.getSession();
         try {
             System.out.println("CREATING SHIPPING COMPANY");
-            customerAccountService.register(customer.getName(), customer.getUsername(), customer.getPassword(), customer.getLocation());
+            customerAccountService.register(customer.getName(), customer.getUsername(), customer.getPassword(), customer.getLocation(), customer.getEmail());
             //session.setAttribute("username", customer.getUsername());
             return Response.status(Response.Status.CREATED).build();
         } catch (Exception e) {
@@ -62,7 +64,7 @@ public class CustomerController {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
     }
-    
+
     @POST
     @Path("/addProductToCart/{name}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -199,12 +201,13 @@ public class CustomerController {
                     session.setAttribute("cart", cart);
                 }
                 int success = 0;
+                int totalPrice = 0;
                 boolean modified = false;
                 for (String item : cart) {
-                    int rowsUpdated = entityManager.createQuery("UPDATE product p SET p.quantity = p.quantity - 1 WHERE p.name = :item AND p.quantity > 0")
+                    List<product> products = entityManager.createQuery("SELECT p FROM product p WHERE p.name = :item AND p.quantity > 0")
                             .setParameter("item", item)
-                            .executeUpdate();
-                    if (rowsUpdated > 0) {
+                            .getResultList();
+                    if (products.size() > 0) {
                         success += 1;
                         modified = true;
                     }
@@ -213,10 +216,34 @@ public class CustomerController {
                     cart.clear();
                     throw new Exception("None of the updates were successful.");
                 }
+                for (String item : cart) {
+                    Query query = entityManager.createQuery("SELECT p.price FROM product p WHERE p.name = :item");
+                    query.setParameter("item", item);
+                    Integer price = (Integer) query.getSingleResult();
+                    totalPrice += price;
+                }
+
 
                 if (cart.size() > 0) {
                     String cartStr = String.join(",", cart);
-                    orders order = new orders(username, cartStr, "-", "pending");
+                    TypedQuery<String> queryLocation = entityManager.createQuery("SELECT ca.location FROM customeraccount ca WHERE ca.username = :username", String.class);
+                    queryLocation.setParameter("username", username);
+                    String location = queryLocation.getSingleResult();
+                    orders order = new orders(username, cartStr, "-", "pending", totalPrice, location);
+                    for (String item : cart) {
+                        Query query = entityManager.createQuery("SELECT p.sellerName FROM product p WHERE p.name = :item");
+                        query.setParameter("item", item);
+                        String selling_company_name = (String) query.getSingleResult();
+                        sellingcompanysoldproducts sold = new sellingcompanysoldproducts(username, selling_company_name, "-", item, "pending");
+                        System.out.println("usernmae: " + sold.getCustomerName());
+                        System.out.println("sellingCompany: " + sold.getSellingCompanyName());
+                        System.out.println("shippingCompany: " + sold.getShippingCompany());
+                        System.out.println("shippingCompany: " + sold.getProduct());
+                        System.out.println("shippingCompany: " + sold.getStatus());
+
+                        productSellingCompanyAccountService.addSoldProduct(sold);
+
+                    }
 
                     EntityManager entityManager = null;
 
@@ -225,7 +252,11 @@ public class CustomerController {
                         entityManager.getTransaction().begin();
                         entityManager.persist(order);
                         entityManager.getTransaction().commit();
-
+                        for (String item : cart) {
+                            int rowsUpdated = entityManager.createQuery("UPDATE product p SET p.quantity = p.quantity - 1 WHERE p.name = :item AND p.quantity > 0")
+                                    .setParameter("item", item)
+                                    .executeUpdate();
+                        }
                         //IF THE PURCHASE IS COMMITED THE CART SHOULD BE CLEARED
                         cart.clear();
                     } catch (Exception e) {

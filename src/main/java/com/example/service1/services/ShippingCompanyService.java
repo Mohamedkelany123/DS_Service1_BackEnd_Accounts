@@ -2,6 +2,7 @@ package com.example.service1.services;
 
 
 
+import com.example.service1.entities.sellingcompanysoldproducts;
 import com.example.service1.entities.shippingcompany;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
@@ -57,6 +58,7 @@ public class ShippingCompanyService {
             entityManager.getTransaction().commit();
         }
     }
+
 
     private String generateRandomPassword() {
         String CHARACTERS = "abcdefghijklmnopqrstuvwxyz0123456789";

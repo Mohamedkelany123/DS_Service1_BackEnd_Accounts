@@ -21,13 +21,17 @@ public class customeraccount {
     @Column(name = "location")
     private String location;
 
+    @Column(name = "email")
+    private String email;
+
     public customeraccount() {}
 
-    public customeraccount(String name, String username, String password, String location) {
+    public customeraccount(String name, String username, String password, String location, String email) {
         this.username = username;
         this.password = password;
         this.name = name;
         this.location = location;
+        this.email = email;
     }
 
     public String getName() {
@@ -69,5 +73,9 @@ public class customeraccount {
     public void setLocation(String location) {
         this.location = location;
     }
+
+    public String getEmail() {return email;}
+
+    public void setEmail(String email) {this.email = email;}
 }
 
