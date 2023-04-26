@@ -9,6 +9,10 @@ import com.example.service1.services.ProductSellingCompanyAccountService;
 import com.example.service1.services.PurchaseOrderService;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Stateful;
+import jakarta.inject.Inject;
+import jakarta.jms.JMSContext;
+import jakarta.jms.ObjectMessage;
+import jakarta.jms.Queue;
 import jakarta.persistence.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -32,6 +36,12 @@ public class CustomerController {
 
     @EJB
     ProductSellingCompanyAccountService productSellingCompanyAccountService;
+
+//    @Inject
+//    private JMSContext jmsContext;
+//
+//    @Inject
+//    private Queue shippingRequestQueue;
 
     private ArrayList<String> cart = new ArrayList<>();
 
@@ -230,20 +240,7 @@ public class CustomerController {
                     queryLocation.setParameter("username", username);
                     String location = queryLocation.getSingleResult();
                     orders order = new orders(username, cartStr, "-", "pending", totalPrice, location);
-                    for (String item : cart) {
-                        Query query = entityManager.createQuery("SELECT p.sellerName FROM product p WHERE p.name = :item");
-                        query.setParameter("item", item);
-                        String selling_company_name = (String) query.getSingleResult();
-                        sellingcompanysoldproducts sold = new sellingcompanysoldproducts(username, selling_company_name, "-", item, "pending");
-                        System.out.println("usernmae: " + sold.getCustomerName());
-                        System.out.println("sellingCompany: " + sold.getSellingCompanyName());
-                        System.out.println("shippingCompany: " + sold.getShippingCompany());
-                        System.out.println("shippingCompany: " + sold.getProduct());
-                        System.out.println("shippingCompany: " + sold.getStatus());
 
-                        productSellingCompanyAccountService.addSoldProduct(sold);
-
-                    }
 
                     EntityManager entityManager = null;
 
@@ -257,6 +254,49 @@ public class CustomerController {
                                     .setParameter("item", item)
                                     .executeUpdate();
                         }
+                        for (String item : cart) {
+                            Query query = entityManager.createQuery("SELECT p.sellerName FROM product p WHERE p.name = :item");
+                            query.setParameter("item", item);
+                            String selling_company_name = (String) query.getSingleResult();
+
+
+                            System.out.println("BEFORE QUERY 2");
+                            Long orderId = 0L;
+                            try {
+                                TypedQuery<Long> query2 = entityManager.createQuery(
+                                        "SELECT p.id FROM orders p WHERE p.customerName = :name AND p.shipping_company = :shippingCompany", Long.class);
+                                query2.setParameter("name", order.getCustomerName()).setParameter("shippingCompany", order.getShipping_company());
+                                orderId = query2.getSingleResult();
+                            } catch (NoResultException e) {
+                                System.out.println("1:"+e);
+                            } catch (NonUniqueResultException e) {
+                                System.out.println("2 CATCH:"+e);
+                            } catch (Exception e) {
+                                System.out.println("3:"+e);
+                            }
+
+                            System.out.println("after INT ORDERID");
+
+
+                            System.out.println("ORDER ID:"+orderId);
+                            sellingcompanysoldproducts sold = new sellingcompanysoldproducts(username, selling_company_name, "-", item, "pending", orderId);
+                            System.out.println("usernmae: " + sold.getCustomerName());
+                            System.out.println("sellingCompany: " + sold.getSellingCompanyName());
+                            System.out.println("shippingCompany: " + sold.getShippingCompany());
+                            System.out.println("Product: " + sold.getProduct());
+                            System.out.println("Status: " + sold.getStatus());
+                            System.out.println("BEFORE ADD SOLD PRODUCT");
+                            productSellingCompanyAccountService.addSoldProduct(sold);
+
+
+//                        try {
+//                            ObjectMessage message = jmsContext.createObjectMessage(order);
+//                            jmsContext.createProducer().send(shippingRequestQueue, message);
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+
+                        }
                         //IF THE PURCHASE IS COMMITED THE CART SHOULD BE CLEARED
                         cart.clear();
                     } catch (Exception e) {
@@ -267,6 +307,7 @@ public class CustomerController {
                     } finally {
                         if (entityManager != null) {
                             entityManager.close();
+
                         }
                     }
                 }

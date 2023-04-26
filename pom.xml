@@ -51,6 +51,19 @@
         </dependency>
         <!-- //////////////////////////////////////////////////////////// -->
 
+        <!--FOR MSG-DRIVEN -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.13.4</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.13.4.1</version>
+        </dependency>
+        <!--   ///////////////////////////////////////////////////////      -->
+
     </dependencies>
 
     <build>
