@@ -288,7 +288,7 @@ public class CustomerController {
                             System.out.println("BEFORE ADD SOLD PRODUCT");
                             productSellingCompanyAccountService.addSoldProduct(sold);
 
-
+                        ////////////////////////////////////////////
 //                        try {
 //                            ObjectMessage message = jmsContext.createObjectMessage(order);
 //                            jmsContext.createProducer().send(shippingRequestQueue, message);
@@ -297,6 +297,7 @@ public class CustomerController {
 //                        }
 
                         }
+                        //////////////////////////////////////////
                         //IF THE PURCHASE IS COMMITED THE CART SHOULD BE CLEARED
                         cart.clear();
                     } catch (Exception e) {

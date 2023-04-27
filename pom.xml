@@ -17,6 +17,14 @@
         <junit.version>5.9.1</junit.version>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>jboss-public-repository-group</id>
+            <name>JBoss Public Repository Group</name>
+            <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>jakarta.platform</groupId>
@@ -52,19 +60,27 @@
         <!-- //////////////////////////////////////////////////////////// -->
 
         <!--FOR MSG-DRIVEN -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-            <version>2.13.4</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>2.13.4.1</version>
-        </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>org.apache.activemq</groupId>-->
+<!--            <artifactId>activemq-jms-pool</artifactId>-->
+<!--            <version>5.16.2</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.geronimo.specs</groupId>-->
+<!--            <artifactId>geronimo-jms_1.1_spec</artifactId>-->
+<!--            <version>1.1.1</version>-->
+<!--            <scope>provided</scope>-->
+<!--        </dependency>-->
+
+
         <!--   ///////////////////////////////////////////////////////      -->
 
     </dependencies>
+
+
+
 
     <build>
         <plugins>
