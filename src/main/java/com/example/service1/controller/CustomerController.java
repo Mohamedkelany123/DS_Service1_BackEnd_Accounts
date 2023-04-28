@@ -10,9 +10,7 @@ import com.example.service1.services.PurchaseOrderService;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Stateful;
 import jakarta.inject.Inject;
-import jakarta.jms.JMSContext;
-import jakarta.jms.ObjectMessage;
-import jakarta.jms.Queue;
+import jakarta.jms.*;
 import jakarta.persistence.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -21,6 +19,7 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,12 +35,6 @@ public class CustomerController {
 
     @EJB
     ProductSellingCompanyAccountService productSellingCompanyAccountService;
-
-//    @Inject
-//    private JMSContext jmsContext;
-//
-//    @Inject
-//    private Queue shippingRequestQueue;
 
     private ArrayList<String> cart = new ArrayList<>();
 
@@ -264,8 +257,10 @@ public class CustomerController {
                             Long orderId = 0L;
                             try {
                                 TypedQuery<Long> query2 = entityManager.createQuery(
-                                        "SELECT p.id FROM orders p WHERE p.customerName = :name AND p.shipping_company = :shippingCompany", Long.class);
-                                query2.setParameter("name", order.getCustomerName()).setParameter("shippingCompany", order.getShipping_company());
+                                        "SELECT p.id FROM orders p WHERE p.customerName = :name AND p.shipping_company = :shippingCompany AND p.status = :status", Long.class);
+                                query2.setParameter("name", order.getCustomerName())
+                                        .setParameter("shippingCompany", "-")
+                                        .setParameter("status",order.getStatus());
                                 orderId = query2.getSingleResult();
                             } catch (NoResultException e) {
                                 System.out.println("1:"+e);
@@ -289,13 +284,7 @@ public class CustomerController {
                             productSellingCompanyAccountService.addSoldProduct(sold);
 
                         ////////////////////////////////////////////
-//                        try {
-//                            ObjectMessage message = jmsContext.createObjectMessage(order);
-//                            jmsContext.createProducer().send(shippingRequestQueue, message);
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                        }
-
+                        customerAccountService.sendToQueue(String.valueOf(orderId));
                         }
                         //////////////////////////////////////////
                         //IF THE PURCHASE IS COMMITED THE CART SHOULD BE CLEARED
@@ -361,4 +350,6 @@ public class CustomerController {
         }
         return Response.ok().build();
     }
+
+
 }

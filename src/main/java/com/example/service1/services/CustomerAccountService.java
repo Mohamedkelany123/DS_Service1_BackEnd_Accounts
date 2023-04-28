@@ -1,18 +1,54 @@
 package com.example.service1.services;
 
 import com.example.service1.entities.customeraccount;
+import jakarta.annotation.Resource;
+import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
+import jakarta.jms.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.TypedQuery;
+
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import java.util.List;
 
 @Stateless
 public class CustomerAccountService {
 
+    @EJB
+    private GeographicCoverageService coverageService;
+
     private final EntityManagerFactory emf = Persistence.createEntityManagerFactory("mysql");
     private final EntityManager entityManager = emf.createEntityManager();
+
+    @Resource(mappedName = "java:/jms/queue/ShippingRequestQueue")
+    private Queue queue;
+    public void sendToQueue(String request)
+    {
+
+
+
+        try
+        {
+            Context context = new InitialContext();
+            ConnectionFactory connectionFactory = (ConnectionFactory) context.lookup("java:/ConnectionFactory");
+            Connection connection = connectionFactory.createConnection();
+            Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            MessageProducer producer = session.createProducer(this.queue);
+            ObjectMessage message = session.createObjectMessage();
+            message.setObject(request);
+            producer.send(message);
+            session.close();
+            connection.close();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
 
     public void register(String name, String username, String password, String location, String email) {
         customeraccount customer = new customeraccount(name, username, password, location, email);
