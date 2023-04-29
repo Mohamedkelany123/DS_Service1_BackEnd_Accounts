@@ -22,13 +22,12 @@ public class CustomerAccountService {
     private final EntityManagerFactory emf = Persistence.createEntityManagerFactory("mysql");
     private final EntityManager entityManager = emf.createEntityManager();
 
+
     @Resource(mappedName = "java:/jms/queue/ShippingRequestQueue")
     private Queue queue;
     public void sendToQueue(String request2, String username, Long orderId)
     {
-
         String request = username + "," + orderId + "," + request2;
-
         try
         {
             Context context = new InitialContext();

@@ -21,28 +21,28 @@ public class ShippingCompanyService {
     private final EntityManagerFactory emf = Persistence.createEntityManagerFactory("mysql");
     private final EntityManager entityManager = emf.createEntityManager();
 
-    public void createShippingCompany(String companyName,String geographicCoverage) {
-        String password = generateRandomPassword();
-        shippingcompany company = new shippingcompany(companyName, password, geographicCoverage);
-
-        EntityManager entityManager = null;
-
-        try {
-            entityManager = emf.createEntityManager();
-            entityManager.getTransaction().begin();
-            entityManager.persist(company);
-            entityManager.getTransaction().commit();
-        } catch (Exception e) {
-            if (entityManager != null && entityManager.getTransaction().isActive()) {
-                entityManager.getTransaction().rollback();
-            }
-            throw e;
-        } finally {
-            if (entityManager != null) {
-                entityManager.close();
-            }
-        }
-    }
+//    public void createShippingCompany(String companyName,String geographicCoverage) {
+//        String password = generateRandomPassword();
+//        shippingcompany company = new shippingcompany(companyName, password, geographicCoverage);
+//
+//        EntityManager entityManager = null;
+//
+//        try {
+//            entityManager = emf.createEntityManager();
+//            entityManager.getTransaction().begin();
+//            entityManager.persist(company);
+//            entityManager.getTransaction().commit();
+//        } catch (Exception e) {
+//            if (entityManager != null && entityManager.getTransaction().isActive()) {
+//                entityManager.getTransaction().rollback();
+//            }
+//            throw e;
+//        } finally {
+//            if (entityManager != null) {
+//                entityManager.close();
+//            }
+//        }
+//    }
 
     public List<shippingcompany> listShippingCompanies() {
         TypedQuery<shippingcompany> query = entityManager.createQuery("SELECT c FROM shippingcompany c", shippingcompany.class);
@@ -71,6 +71,5 @@ public class ShippingCompanyService {
             sb.append(CHARACTERS.charAt(random.nextInt(CHARACTERS.length())));
         }
         return sb.toString();
-
     }
 }

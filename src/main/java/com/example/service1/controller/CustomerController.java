@@ -1,9 +1,6 @@
 package com.example.service1.controller;
 
-import com.example.service1.entities.customeraccount;
-import com.example.service1.entities.orders;
-import com.example.service1.entities.product;
-import com.example.service1.entities.sellingcompanysoldproducts;
+import com.example.service1.entities.*;
 import com.example.service1.services.CustomerAccountService;
 import com.example.service1.services.GeographicCoverageService;
 import com.example.service1.services.ProductSellingCompanyAccountService;
@@ -353,6 +350,22 @@ public class CustomerController {
             session.invalidate();
         }
         return Response.ok().build();
+    }
+
+    @GET
+    @Path("/viewNotifications")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<notifications> viewNotifications(@Context HttpServletRequest request){
+        HttpSession session = request.getSession();
+        String username = (String) session.getAttribute("username");
+        if (username == null) {
+            return null;
+        } else {
+            TypedQuery<notifications> query = entityManager.createQuery("SELECT o FROM notifications o WHERE o.username = :name", notifications.class);
+            query.setParameter("name", username);
+            List<notifications> notifications = query.getResultList();
+            return notifications;
+        }
     }
 
 

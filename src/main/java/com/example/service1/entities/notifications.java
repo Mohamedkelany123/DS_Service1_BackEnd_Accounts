@@ -25,7 +25,8 @@ public class notifications {
     @Column(name = "notificationTime")
     private String notificationTime;
 
-
+    public notifications() {
+    }
     public notifications( String username, int orderId, String message, String time) {
         this.orderId = orderId;
         this.username = username;
