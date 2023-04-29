@@ -8,7 +8,6 @@
         <class>com.example.service1.entities.admin</class>
         <class>com.example.service1.entities.customeraccount</class>
         <class>com.example.service1.entities.productsellingcompany</class>
-        <class>com.example.service1.entities.shippingcompany</class>
         <class>com.example.service1.entities.product</class>
         <class>com.example.service1.entities.orders</class>
         <class>com.example.service1.entities.sellingcompanysoldproducts</class>

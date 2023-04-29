@@ -283,10 +283,11 @@ public class CustomerController {
                             System.out.println("Status: " + sold.getStatus());
                             System.out.println("BEFORE ADD SOLD PRODUCT");
                             productSellingCompanyAccountService.addSoldProduct(sold);
-                            customerAccountService.sendToQueue("Order ID[" +orderId+ "]Successfully Added!", username, orderId);
+
                             ///////////////////////////////////////////
 
                         }
+                        customerAccountService.sendToQueue("Order ID[" +orderId+ "]Successfully Added!", username, orderId);
                         //////////////////////////////////////////
                         //IF THE PURCHASE IS COMMITED THE CART SHOULD BE CLEARED
                         cart.clear();
@@ -367,6 +368,7 @@ public class CustomerController {
             return notifications;
         }
     }
+
 
 
 }

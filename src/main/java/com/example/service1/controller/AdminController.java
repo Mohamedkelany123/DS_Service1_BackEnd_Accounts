@@ -6,7 +6,7 @@ import com.example.service1.entities.productsellingcompany;
 import com.example.service1.services.CustomerAccountService;
 import com.example.service1.services.GeographicCoverageService;
 import com.example.service1.services.ProductSellingCompanyAccountService;
-import com.example.service1.services.ShippingCompanyService;
+//import com.example.service1.services.ShippingCompanyService;
 import jakarta.ejb.EJB;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -34,8 +34,8 @@ public class AdminController {
     @EJB
     private ProductSellingCompanyAccountService sellingCompanyService;
 
-    @EJB
-    private ShippingCompanyService shippingCompanyService;
+//    @EJB
+//    private ShippingCompanyService shippingCompanyService;
 
     @EJB
     private CustomerAccountService customerAccountService;
@@ -160,16 +160,16 @@ public class AdminController {
         }
     }
 
-    @DELETE
-    @Path("/deleteShippingCompany/{id}")
-    public Response deleteShippingCompany(@PathParam("id") Long companyId) {
-        try {
-            shippingCompanyService.deleteShippingCompany(companyId);
-            return Response.status(Status.OK).build();
-        } catch (Exception e) {
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Failed to delete shipping company").build();
-        }
-    }
+//    @DELETE
+//    @Path("/deleteShippingCompany/{id}")
+//    public Response deleteShippingCompany(@PathParam("id") Long companyId) {
+//        try {
+//            shippingCompanyService.deleteShippingCompany(companyId);
+//            return Response.status(Status.OK).build();
+//        } catch (Exception e) {
+//            return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Failed to delete shipping company").build();
+//        }
+//    }
 
     @GET
     @Path("/listCustomerAccounts")
