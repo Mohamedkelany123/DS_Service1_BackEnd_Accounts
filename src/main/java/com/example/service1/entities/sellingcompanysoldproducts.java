@@ -43,6 +43,7 @@ public class sellingcompanysoldproducts {
     }
 
     // getters and setters
+
     public Long getId() {
         return id;
     }
@@ -51,27 +52,27 @@ public class sellingcompanysoldproducts {
         this.id = id;
     }
 
-    public String getCustomerName() {
+    public String getCustomer_name() {
         return customer_name;
     }
 
-    public void setCustomerName(String customer_name) {
+    public void setCustomer_name(String customer_name) {
         this.customer_name = customer_name;
     }
 
-    public String getSellingCompanyName() {
+    public String getSelling_company_name() {
         return selling_company_name;
     }
 
-    public void setSellingCompanyName(String selling_company_name) {
+    public void setSelling_company_name(String selling_company_name) {
         this.selling_company_name = selling_company_name;
     }
 
-    public String getShippingCompany() {
+    public String getShipping_company() {
         return shipping_company;
     }
 
-    public void setShippingCompany(String shipping_company) {
+    public void setShipping_company(String shipping_company) {
         this.shipping_company = shipping_company;
     }
 
@@ -91,20 +92,12 @@ public class sellingcompanysoldproducts {
         this.status = status;
     }
 
-    public String getCustomer_name() {return customer_name;}
+    public Long getOrderId() {
+        return orderId;
+    }
 
-    public void setCustomer_name(String customer_name) {this.customer_name = customer_name;}
-
-    public String getSelling_company_name() {return selling_company_name;}
-
-    public void setSelling_company_name(String selling_company_name) {this.selling_company_name = selling_company_name;}
-
-    public String getShipping_company() {return shipping_company;}
-
-    public void setShipping_company(String shipping_company) {this.shipping_company = shipping_company;}
-
-    public Long getOrderId() {return orderId;}
-
-    public void setOrderId(Long orderId) {this.orderId = orderId;}
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
+    }
 }
 

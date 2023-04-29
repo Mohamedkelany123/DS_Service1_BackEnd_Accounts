@@ -5,6 +5,7 @@ import com.example.service1.entities.customeraccount;
 import com.example.service1.entities.productsellingcompany;
 import com.example.service1.entities.shippingcompany;
 import com.example.service1.services.CustomerAccountService;
+import com.example.service1.services.GeographicCoverageService;
 import com.example.service1.services.ProductSellingCompanyAccountService;
 import com.example.service1.services.ShippingCompanyService;
 import jakarta.ejb.EJB;
@@ -105,13 +106,17 @@ public class AdminController {
     @Path("/registerShippingCompany/{name}/{geographic_coverage}")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response registerShippingCompany(@PathParam("name") String company_name, @PathParam("geographic_coverage") String geographic_coverage) {
-        try {
-            System.out.println("CREATING SHIPPING COMPANY");
-            System.out.println("COMPANY NAME: "+ company_name);
-            shippingCompanyService.createShippingCompany(company_name, geographic_coverage);
-            return Response.status(Status.CREATED).build();
-        } catch (Exception e) {
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Failed to register shipping company").build();
+        if(GeographicCoverageService.getInstance().isRegionSupported(geographic_coverage)) {
+            try {
+                System.out.println("CREATING SHIPPING COMPANY");
+                System.out.println("COMPANY NAME: " + company_name);
+                shippingCompanyService.createShippingCompany(company_name, geographic_coverage);
+                return Response.status(Status.CREATED).build();
+            } catch (Exception e) {
+                return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Failed to register shipping company").build();
+            }
+        }else{
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Coverage Not Valid!").build();
         }
     }
 

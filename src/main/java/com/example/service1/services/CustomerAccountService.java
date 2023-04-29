@@ -1,14 +1,12 @@
 package com.example.service1.services;
 
 import com.example.service1.entities.customeraccount;
+import com.example.service1.entities.orders;
 import jakarta.annotation.Resource;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
 import jakarta.jms.*;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
-import jakarta.persistence.TypedQuery;
+import jakarta.persistence.*;
 
 
 import javax.naming.Context;
@@ -18,18 +16,18 @@ import java.util.List;
 @Stateless
 public class CustomerAccountService {
 
-    @EJB
-    private GeographicCoverageService coverageService;
+//    @EJB
+//    private GeographicCoverageService coverageService;
 
     private final EntityManagerFactory emf = Persistence.createEntityManagerFactory("mysql");
     private final EntityManager entityManager = emf.createEntityManager();
 
     @Resource(mappedName = "java:/jms/queue/ShippingRequestQueue")
     private Queue queue;
-    public void sendToQueue(String request)
+    public void sendToQueue(String request2, String username, Long orderId)
     {
 
-
+        String request = username + "," + orderId + "," + request2;
 
         try
         {
@@ -47,6 +45,15 @@ public class CustomerAccountService {
         catch (Exception e)
         {
             e.printStackTrace();
+        }
+    }
+
+    private static boolean isValidInteger(String input) {
+        try {
+            Integer.parseInt(input);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
         }
     }
 

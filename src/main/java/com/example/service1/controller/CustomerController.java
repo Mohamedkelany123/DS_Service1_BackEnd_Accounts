@@ -5,12 +5,11 @@ import com.example.service1.entities.orders;
 import com.example.service1.entities.product;
 import com.example.service1.entities.sellingcompanysoldproducts;
 import com.example.service1.services.CustomerAccountService;
+import com.example.service1.services.GeographicCoverageService;
 import com.example.service1.services.ProductSellingCompanyAccountService;
 import com.example.service1.services.PurchaseOrderService;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Stateful;
-import jakarta.inject.Inject;
-import jakarta.jms.*;
 import jakarta.persistence.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -35,6 +34,9 @@ public class CustomerController {
 
     @EJB
     ProductSellingCompanyAccountService productSellingCompanyAccountService;
+
+//    @EJB
+//    private GeographicCoverageService geographicCoverageService;
 
     private ArrayList<String> cart = new ArrayList<>();
 
@@ -226,14 +228,13 @@ public class CustomerController {
                     totalPrice += price;
                 }
 
-
+                Long orderId = 0L;
                 if (cart.size() > 0) {
                     String cartStr = String.join(",", cart);
                     TypedQuery<String> queryLocation = entityManager.createQuery("SELECT ca.location FROM customeraccount ca WHERE ca.username = :username", String.class);
                     queryLocation.setParameter("username", username);
                     String location = queryLocation.getSingleResult();
                     orders order = new orders(username, cartStr, "-", "pending", totalPrice, location);
-
 
                     EntityManager entityManager = null;
 
@@ -254,37 +255,40 @@ public class CustomerController {
 
 
                             System.out.println("BEFORE QUERY 2");
-                            Long orderId = 0L;
+
                             try {
                                 TypedQuery<Long> query2 = entityManager.createQuery(
-                                        "SELECT p.id FROM orders p WHERE p.customerName = :name AND p.shipping_company = :shippingCompany AND p.status = :status", Long.class);
-                                query2.setParameter("name", order.getCustomerName())
-                                        .setParameter("shippingCompany", "-")
-                                        .setParameter("status",order.getStatus());
+                                        "SELECT MAX(p.id) FROM orders p WHERE p.customerName = :name", Long.class);
+                                query2.setParameter("name", order.getCustomerName());
                                 orderId = query2.getSingleResult();
                             } catch (NoResultException e) {
-                                System.out.println("1:"+e);
+                                System.out.println("1:" + e);
                             } catch (NonUniqueResultException e) {
-                                System.out.println("2 CATCH:"+e);
+                                System.out.println("2 CATCH:" + e);
                             } catch (Exception e) {
-                                System.out.println("3:"+e);
+                                System.out.println("3:" + e);
                             }
 
-                            System.out.println("after INT ORDERID");
+                            if(!GeographicCoverageService.getInstance().isRegionSupported(location)){
+                                customerAccountService.sendToQueue("Order Location Not Covered!", username, orderId);
+                                Query queryDelete = entityManager.createQuery("DELETE FROM orders o WHERE o.id = :orderId");
+                                queryDelete.setParameter("orderId", orderId);
+                                queryDelete.executeUpdate();
+                                throw new RuntimeException("Order Location Not Covered!");
+                            }
 
-
-                            System.out.println("ORDER ID:"+orderId);
+                            System.out.println("ORDER ID:" + orderId);
                             sellingcompanysoldproducts sold = new sellingcompanysoldproducts(username, selling_company_name, "-", item, "pending", orderId);
-                            System.out.println("usernmae: " + sold.getCustomerName());
-                            System.out.println("sellingCompany: " + sold.getSellingCompanyName());
-                            System.out.println("shippingCompany: " + sold.getShippingCompany());
+                            System.out.println("usernmae: " + sold.getCustomer_name());
+                            System.out.println("sellingCompany: " + sold.getSelling_company_name());
+                            System.out.println("shippingCompany: " + sold.getShipping_company());
                             System.out.println("Product: " + sold.getProduct());
                             System.out.println("Status: " + sold.getStatus());
                             System.out.println("BEFORE ADD SOLD PRODUCT");
                             productSellingCompanyAccountService.addSoldProduct(sold);
+                            customerAccountService.sendToQueue("Order ID[" +orderId+ "]Successfully Added!", username, orderId);
+                            ///////////////////////////////////////////
 
-                        ////////////////////////////////////////////
-                        customerAccountService.sendToQueue(String.valueOf(orderId));
                         }
                         //////////////////////////////////////////
                         //IF THE PURCHASE IS COMMITED THE CART SHOULD BE CLEARED

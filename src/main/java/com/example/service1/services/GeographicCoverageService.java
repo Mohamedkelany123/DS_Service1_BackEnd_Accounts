@@ -9,8 +9,6 @@ import java.util.List;
 public class GeographicCoverageService {
 
     private List<String> supportedRegions = new ArrayList<>();
-    private final EntityManagerFactory emf = Persistence.createEntityManagerFactory("mysql");
-    private final EntityManager entityManager = emf.createEntityManager();
 
     private GeographicCoverageService() {
         supportedRegions = new ArrayList<>(Arrays.asList("cairo", "giza", "alexandria"));

@@ -12,6 +12,7 @@
         <class>com.example.service1.entities.product</class>
         <class>com.example.service1.entities.orders</class>
         <class>com.example.service1.entities.sellingcompanysoldproducts</class>
+        <class>com.example.service1.entities.notifications</class>
         <!-- other classes -->
         <properties>
             <!-- FOR MSG-DRIVEN -->
