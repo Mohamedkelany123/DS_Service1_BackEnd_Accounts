@@ -62,6 +62,7 @@ public class ProductSellingCompanyAccountService {
     }
 
     public void addSoldProduct(sellingcompanysoldproducts soldProduct) {
+        System.out.println("/////////INSIDE ADD SOLD PRODUCT");
         entityManager.getTransaction().begin();
         entityManager.persist(soldProduct);
         entityManager.getTransaction().commit();
