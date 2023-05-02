@@ -28,14 +28,8 @@ public class CustomerController {
     @EJB
     private CustomerAccountService customerAccountService;
 
-//    @EJB
-//    private PurchaseOrderService purchaseOrderService;
-
     @EJB
     ProductSellingCompanyAccountService productSellingCompanyAccountService;
-
-//    @EJB
-//    private GeographicCoverageService geographicCoverageService;
 
 
     private final EntityManagerFactory emf = Persistence.createEntityManagerFactory("mysql");

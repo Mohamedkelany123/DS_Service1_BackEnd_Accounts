@@ -47,6 +47,8 @@ public class PurchaseOrderService {
             if (products.size() > 0) {
                 success += 1;
                 modified = true;
+            }else{
+                throw new Exception("Failed To Purchase [" + item + "] is out of stock!");
             }
         }
         if (success != cart.size() || !modified) {
